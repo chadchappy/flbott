@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: french-laundry-bot
+  labels:
+    app: french-laundry-bot
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: french-laundry-bot
+  template:
+    metadata:
+      labels:
+        app: french-laundry-bot
+        version: v1
+    spec:
+      containers:
+      - name: flbot
+        image: ghcr.io/chadchappy/flbot:latest
+        imagePullPolicy: Always
+        env:
+        - name: TOCK_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: flbot-credentials
+              key: tock-email
+        - name: TOCK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: flbot-credentials
+              key: tock-password
+        - name: TOCK_PHONE
+          valueFrom:
+            secretKeyRef:
+              name: flbot-credentials
+              key: tock-phone
+              optional: true
+        - name: HEADLESS
+          value: "true"
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/flbot
+      volumes:
+      - name: logs
+        emptyDir: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: french-laundry-bot
+  labels:
+    app: french-laundry-bot
+spec:
+  selector:
+    app: french-laundry-bot
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
+

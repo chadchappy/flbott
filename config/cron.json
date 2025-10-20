@@ -1,0 +1,29 @@
+{
+  "jobs": [
+    {
+      "name": "job1",
+      "schedule": "0 * * * *",
+      "params": {
+        "param1": "value1",
+        "param2": "value2"
+      }
+    },
+    {
+      "name": "job2",
+      "schedule": "*/5 * * * *",
+      "params": {
+        "param1": "value1"
+      }
+    },
+    {
+      "name": "aliasCommandsJob",
+      "schedule": "0 0-7,16-23 * * *",
+      "params": {}
+    },
+    {
+      "name": "frenchLaundryBot",
+      "schedule": "0 0 1 * *",
+      "params": {}
+    }
+  ]
+}
